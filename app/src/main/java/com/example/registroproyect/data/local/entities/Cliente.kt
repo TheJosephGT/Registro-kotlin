@@ -7,5 +7,11 @@ import androidx.room.PrimaryKey
 data class Cliente (
     @PrimaryKey
     val ClienteId: Int?=null,
-    var Nombre: String = ""
+    var Nombre: String = "",
+    var Telefono: String = "",
+    var Email: String = "",
+    var Direccion: String = "",
+    var Celular: String = "",
+    var FechaNacimiento: String = "",
+    var Ocupacion: String = ""
 )

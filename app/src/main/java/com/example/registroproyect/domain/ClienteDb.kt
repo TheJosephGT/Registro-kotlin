@@ -7,7 +7,7 @@ import com.example.registroproyect.data.local.entities.Cliente
 
 @Database(
     entities = [Cliente::class],
-    version = 1
+    version = 3
 )
 abstract class ClienteDb : RoomDatabase() {
     abstract fun clienteDao(): ClienteDao
