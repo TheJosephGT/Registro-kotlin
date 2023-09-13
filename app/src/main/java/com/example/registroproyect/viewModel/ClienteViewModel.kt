@@ -28,6 +28,7 @@ class ClienteViewModel @Inject constructor(
     var Celular by mutableStateOf("")
     var FechaNacimiento by mutableStateOf("")
     var Ocupacion by mutableStateOf("")
+    val OcupacionList = listOf("Opcion 1", "Opcion 2", "Opcion 3")
 
     var NombreError by mutableStateOf(true)
     var TelefonoError by mutableStateOf(true)
@@ -49,7 +50,7 @@ class ClienteViewModel @Inject constructor(
         FechaNacimientoError = FechaNacimiento.isNotEmpty()
         OcupacionError = Ocupacion.isNotEmpty()
 
-        if (Nombre == "" || Telefono == "" || Email == "" || Direccion == "" || Celular == "" || FechaNacimiento == "")
+        if (Nombre == "" || Telefono == "" || Email == "" || Direccion == "" || Celular == "" || FechaNacimiento == "" || Ocupacion == "")
             return false
 
         return true
