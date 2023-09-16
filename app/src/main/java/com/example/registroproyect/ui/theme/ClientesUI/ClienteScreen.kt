@@ -54,6 +54,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.toSize
+import com.example.registroproyect.data.local.entities.Cliente
 import java.util.Calendar
 import java.util.Date
 
@@ -73,7 +74,6 @@ fun ScreenPrincipal(viewModel: ClienteViewModel = hiltViewModel()) {
         Icons.Filled.KeyboardArrowDown
     }
 
-
     LaunchedEffect(Unit) {
         viewModel.isMessageShownFlow.collectLatest {
             if (it) {
@@ -87,19 +87,12 @@ fun ScreenPrincipal(viewModel: ClienteViewModel = hiltViewModel()) {
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = { Text(text = "Clientes") },
-                actions = {
-                    IconButton(onClick = { viewModel.limpiar() }) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh, contentDescription = "Refresh"
-                        )
-                    }
-                }
-            )
+            RefreshAppBar(title = "Clientes") {
+                viewModel.limpiar()
+                selectedItem = ""
+            }
         }
     ) {
         Column(
@@ -108,129 +101,144 @@ fun ScreenPrincipal(viewModel: ClienteViewModel = hiltViewModel()) {
                 .padding(it)
                 .padding(8.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                val keyboardController = LocalSoftwareKeyboardController.current
-                Text(text = "Cliente detalles", style = MaterialTheme.typography.titleMedium)
+            val keyboardController = LocalSoftwareKeyboardController.current
+            Text(text = "Cliente detalles", style = MaterialTheme.typography.titleMedium)
 
+            CustomOutlinedTextField(
+                value = viewModel.Nombre,
+                onValueChange = { viewModel.Nombre = it },
+                label = "Nombre",
+                isError = viewModel.NombreError
+            )
+            CustomOutlinedTextField(
+                value = viewModel.Telefono,
+                onValueChange = { viewModel.Telefono = it },
+                label = "Telefono",
+                isError = viewModel.TelefonoError
+            )
+            CustomOutlinedTextField(
+                value = viewModel.Celular,
+                onValueChange = { viewModel.Celular = it },
+                label = "Celular",
+                isError = viewModel.CelularError
+            )
+            CustomOutlinedTextField(
+                value = viewModel.Email,
+                onValueChange = { viewModel.Email = it },
+                label = "Email",
+                isError = viewModel.EmailError
+            )
+            CustomOutlinedTextField(
+                value = viewModel.Direccion,
+                onValueChange = { viewModel.Direccion = it },
+                label = "Dirección",
+                isError = viewModel.DireccionError
+            )
+            val context = LocalContext.current
+            DateText(viewModel = viewModel, context = context)
+            Column {
                 OutlinedTextField(
-                    value = viewModel.Nombre,
-                    onValueChange = { viewModel.Nombre = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text(text = "Nombre") },
-                    singleLine = true,
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = if (viewModel.NombreError) Color.Gray else Color.Red,
-                        unfocusedBorderColor = if (viewModel.NombreError) Color.Gray else Color.Red
-                    )
-                )
-                OutlinedTextField(
-                    value = viewModel.Telefono,
-                    onValueChange = { viewModel.Telefono = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text(text = "Telefono") },
-                    singleLine = true,
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = if (viewModel.TelefonoError) Color.Gray else Color.Red,
-                        unfocusedBorderColor = if (viewModel.TelefonoError) Color.Gray else Color.Red
-                    )
-                )
-                OutlinedTextField(
-                    value = viewModel.Celular,
-                    onValueChange = { viewModel.Celular = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text(text = "Celular") },
-                    singleLine = true,
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = if (viewModel.CelularError) Color.Gray else Color.Red,
-                        unfocusedBorderColor = if (viewModel.CelularError) Color.Gray else Color.Red
-                    )
-                )
-                OutlinedTextField(
-                    value = viewModel.Email,
-                    onValueChange = { viewModel.Email = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text(text = "Email") },
-                    singleLine = true,
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = if (viewModel.EmailError) Color.Gray else Color.Red,
-                        unfocusedBorderColor = if (viewModel.EmailError) Color.Gray else Color.Red
-                    )
-                )
-                OutlinedTextField(
-                    value = viewModel.Direccion,
-                    onValueChange = { viewModel.Direccion = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text(text = "Dirección") },
-                    singleLine = true,
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = if (viewModel.DireccionError) Color.Gray else Color.Red,
-                        unfocusedBorderColor = if (viewModel.DireccionError) Color.Gray else Color.Red
-                    )
-                )
-                val context = LocalContext.current
-                DateText(viewModel = viewModel, context = context)
-                Column {
-                    OutlinedTextField(
-                        value = selectedItem,
-                        onValueChange = {
-                            selectedItem = it
+                    value = selectedItem,
+                    onValueChange = {
+                        selectedItem = it
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onGloballyPositioned { coordinates ->
+                            textFiledSize = coordinates.size.toSize()
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .onGloballyPositioned { coordinates ->
-                                textFiledSize = coordinates.size.toSize()
-                            },
-                        label = { Text("Ocupacion") },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = if (viewModel.OcupacionError) Color.Gray else Color.Red,
-                            unfocusedBorderColor = if (viewModel.OcupacionError) Color.Gray else Color.Red
-                        ),
-                        trailingIcon = {
-                            Icon(icon, "", Modifier.clickable { expanded = !expanded })
-                        },
-                        readOnly = true
-                    )
-                    DropdownMenu(expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier.width(
-                            with(LocalDensity.current) { textFiledSize.width.toDp() }
-                        )) {
-                        viewModel.OcupacionList.forEach { label ->
-                            DropdownMenuItem(text = { Text(text = label) }, onClick = {
-                                selectedItem = label
-                                expanded = false
-                                viewModel.Ocupacion = selectedItem
-                            })
-                        }
+                    label = { Text("Ocupacion") },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = if (viewModel.OcupacionError) Color.Gray else Color.Red,
+                        unfocusedBorderColor = if (viewModel.OcupacionError) Color.Gray else Color.Red
+                    ),
+                    trailingIcon = {
+                        Icon(icon, "", Modifier.clickable { expanded = !expanded })
+                    },
+                    readOnly = true
+                )
+                DropdownMenu(expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.width(
+                        with(LocalDensity.current) { textFiledSize.width.toDp() }
+                    )) {
+                    viewModel.OcupacionList.forEach { label ->
+                        DropdownMenuItem(text = { Text(text = label) }, onClick = {
+                            selectedItem = label
+                            expanded = false
+                            viewModel.Ocupacion = selectedItem
+                        })
                     }
                 }
-                OutlinedButton(onClick = {
-                    keyboardController?.hide()
-                    if (viewModel.Validar()) {
-                        viewModel.saveCliente()
-                        viewModel.setMessageShown()
-                        selectedItem = ""
-                    }
-                }, modifier = Modifier.fillMaxWidth())
-                {
-                    Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "Guardar")
-                    Text(text = "Guardar")
+            }
+            OutlinedButton(onClick = {
+                keyboardController?.hide()
+                if (viewModel.Validar()) {
+                    viewModel.saveCliente()
+                    viewModel.setMessageShown()
+                    selectedItem = ""
                 }
+            }, modifier = Modifier.fillMaxWidth())
+            {
+                Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "Guardar")
+                Text(text = "Guardar")
             }
 
-            Text(text = "Lista de clientes", style = MaterialTheme.typography.titleMedium)
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(clientes) { Cliente ->
-                    Text(text = Cliente.Nombre)
-                }
-            }
+            Consult(clientes = clientes)
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RefreshAppBar(
+    title: String,
+    onRefreshClick: () -> Unit,
+) {
+    TopAppBar(
+        title = { Text(text = title) },
+        actions = {
+            IconButton(onClick = { onRefreshClick() }) {
+                Icon(
+                    imageVector = Icons.Default.Refresh, contentDescription = "Refresh"
+                )
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomOutlinedTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    isError: Boolean
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(text = label) },
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = if (isError) Color.Gray else Color.Red,
+            unfocusedBorderColor = if (isError) Color.Gray else Color.Red
+        )
+    )
+}
+
+@Composable
+fun Consult(clientes: List<Cliente>) {
+    Text(text = "Lista de clientes", style = MaterialTheme.typography.titleMedium)
+
+    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+        items(clientes) { cliente ->
+            Text(text = cliente.Nombre)
+        }
+    }
+}
+
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -260,7 +268,11 @@ fun DateText(
                 keyboardController?.hide()
                 PickerVisible = true
             }) {
-                Icon(imageVector = Icons.Filled.DateRange, contentDescription = "Date Icon", tint = Color.Gray)
+                Icon(
+                    imageVector = Icons.Filled.DateRange,
+                    contentDescription = "Date Icon",
+                    tint = Color.Gray
+                )
             }
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(

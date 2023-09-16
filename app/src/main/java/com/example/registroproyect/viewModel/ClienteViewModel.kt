@@ -50,10 +50,7 @@ class ClienteViewModel @Inject constructor(
         FechaNacimientoError = FechaNacimiento.isNotEmpty()
         OcupacionError = Ocupacion.isNotEmpty()
 
-        if (Nombre == "" || Telefono == "" || Email == "" || Direccion == "" || Celular == "" || FechaNacimiento == "" || Ocupacion == "")
-            return false
-
-        return true
+        return !(Nombre == "" || Telefono == "" || Email == "" || Direccion == "" || Celular == "" || FechaNacimiento == "" || Ocupacion == "")
 
     }
 
