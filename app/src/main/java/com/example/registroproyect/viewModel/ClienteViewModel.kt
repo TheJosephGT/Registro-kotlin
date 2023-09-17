@@ -84,6 +84,11 @@ class ClienteViewModel @Inject constructor(
             limpiar()
         }
     }
+    fun delteCliente(cliente: Cliente){
+        viewModelScope.launch {
+            clienteDb.clienteDao().delete(cliente)
+        }
+    }
 
     fun limpiar() {
         Nombre = ""

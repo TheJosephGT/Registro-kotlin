@@ -4,9 +4,13 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.widget.DatePicker
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,6 +21,8 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,11 +56,15 @@ import kotlinx.coroutines.flow.collectLatest
 import androidx.compose.ui.geometry.Size
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.toSize
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.registroproyect.data.local.entities.Cliente
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.util.Calendar
 import java.util.Date
 
@@ -183,8 +193,6 @@ fun ScreenPrincipal(viewModel: ClienteViewModel = hiltViewModel()) {
                 Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "Guardar")
                 Text(text = "Guardar")
             }
-
-            Consult(clientes = clientes)
         }
     }
 }
@@ -213,7 +221,7 @@ fun CustomOutlinedTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    isError: Boolean
+    isError: Boolean,
 ) {
     OutlinedTextField(
         value = value,
@@ -230,11 +238,49 @@ fun CustomOutlinedTextField(
 
 @Composable
 fun Consult(clientes: List<Cliente>) {
-    Text(text = "Lista de clientes", style = MaterialTheme.typography.titleMedium)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(text = "Lista de clientes", style = MaterialTheme.typography.titleMedium)
 
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        items(clientes) { cliente ->
-            Text(text = cliente.Nombre)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            items(clientes) { cliente ->
+                ClienteItem(cliente)
+            }
+        }
+    }
+}
+
+@Composable
+fun ClienteItem(cliente: Cliente, viewModel: ClienteViewModel = hiltViewModel()) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(text = cliente.Nombre, style = MaterialTheme.typography.titleMedium)
+            Text(text = cliente.Telefono, style = MaterialTheme.typography.titleMedium)
+            Text(text = cliente.Celular, style = MaterialTheme.typography.titleMedium)
+            Text(text = cliente.Email, style = MaterialTheme.typography.titleMedium)
+            Text(text = cliente.Direccion, style = MaterialTheme.typography.titleMedium)
+            Text(text = cliente.FechaNacimiento, style = MaterialTheme.typography.titleMedium)
+            Text(text = cliente.Ocupacion, style = MaterialTheme.typography.titleMedium)
+
+            Button(
+                onClick = {
+                    viewModel.delteCliente(cliente)
+                }
+            ) {
+                Text(text = "Eliminar")
+            }
         }
     }
 }

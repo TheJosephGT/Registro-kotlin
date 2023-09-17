@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.registroproyect.ui.theme.ClientesUI.ScreenPrincipal
+import com.example.registroproyect.ui.theme.Navigation.AppScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                    ScreenPrincipal()
+                    AppScreen()
                 }
             }
         }
