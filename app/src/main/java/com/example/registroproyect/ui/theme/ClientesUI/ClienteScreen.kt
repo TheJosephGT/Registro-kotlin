@@ -5,7 +5,6 @@ import android.content.Context
 import android.widget.DatePicker
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.DateRange
@@ -51,20 +51,16 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.registroproyect.viewModel.ClienteViewModel
 import kotlinx.coroutines.flow.collectLatest
 import androidx.compose.ui.geometry.Size
 
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.toSize
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.registroproyect.data.local.entities.Cliente
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.util.Calendar
 import java.util.Date
 
@@ -118,31 +114,36 @@ fun ScreenPrincipal(viewModel: ClienteViewModel = hiltViewModel()) {
                 value = viewModel.Nombre,
                 onValueChange = { viewModel.Nombre = it },
                 label = "Nombre",
-                isError = viewModel.NombreError
+                isError = viewModel.NombreError,
+                imeAction = ImeAction.Next
             )
             CustomOutlinedTextField(
                 value = viewModel.Telefono,
                 onValueChange = { viewModel.Telefono = it },
                 label = "Telefono",
-                isError = viewModel.TelefonoError
+                isError = viewModel.TelefonoError,
+                imeAction = ImeAction.Next
             )
             CustomOutlinedTextField(
                 value = viewModel.Celular,
                 onValueChange = { viewModel.Celular = it },
                 label = "Celular",
-                isError = viewModel.CelularError
+                isError = viewModel.CelularError,
+                imeAction = ImeAction.Next
             )
             CustomOutlinedTextField(
                 value = viewModel.Email,
                 onValueChange = { viewModel.Email = it },
                 label = "Email",
-                isError = viewModel.EmailError
+                isError = viewModel.EmailError,
+                imeAction = ImeAction.Next
             )
             CustomOutlinedTextField(
                 value = viewModel.Direccion,
                 onValueChange = { viewModel.Direccion = it },
                 label = "Dirección",
-                isError = viewModel.DireccionError
+                isError = viewModel.DireccionError,
+                imeAction = ImeAction.Next
             )
             val context = LocalContext.current
             DateText(viewModel = viewModel, context = context)
@@ -165,7 +166,8 @@ fun ScreenPrincipal(viewModel: ClienteViewModel = hiltViewModel()) {
                     trailingIcon = {
                         Icon(icon, "", Modifier.clickable { expanded = !expanded })
                     },
-                    readOnly = true
+                    readOnly = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
                 )
                 DropdownMenu(expanded = expanded,
                     onDismissRequest = { expanded = false },
@@ -222,6 +224,7 @@ fun CustomOutlinedTextField(
     onValueChange: (String) -> Unit,
     label: String,
     isError: Boolean,
+    imeAction: ImeAction
 ) {
     OutlinedTextField(
         value = value,
@@ -232,7 +235,8 @@ fun CustomOutlinedTextField(
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = if (isError) Color.Gray else Color.Red,
             unfocusedBorderColor = if (isError) Color.Gray else Color.Red
-        )
+        ),
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction)
     )
 }
 
@@ -324,7 +328,8 @@ fun DateText(
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = if (viewModel.FechaNacimientoError) Color.Gray else Color.Red,
             unfocusedBorderColor = if (viewModel.FechaNacimientoError) Color.Gray else Color.Red
-        )
+        ),
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next)
     )
     if (PickerVisible) {
         val datePickerDialog = DatePickerDialog(

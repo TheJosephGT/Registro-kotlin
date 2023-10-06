@@ -2,7 +2,7 @@ package com.example.registroproyect.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.registroproyect.domain.ClienteDb
+import com.example.registroproyect.data.local.ClienteDb
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn( SingletonComponent::class)
+@InstallIn(SingletonComponent::class)
 object AppModule {
     @Provides
     @Singleton
@@ -22,4 +22,7 @@ object AppModule {
             "Cliente.db")
             .fallbackToDestructiveMigration()
             .build()
+
+    @Provides
+    fun providesClienteDao(db: ClienteDb) = db.clienteDao()
 }

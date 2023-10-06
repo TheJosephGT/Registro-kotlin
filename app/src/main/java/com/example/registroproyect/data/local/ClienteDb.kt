@@ -1,4 +1,4 @@
-package com.example.registroproyect.domain
+package com.example.registroproyect.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

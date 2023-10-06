@@ -1,13 +1,13 @@
-package com.example.registroproyect.viewModel
+package com.example.registroproyect.ui.theme.ClientesUI
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.registroproyect.data.local.entities.Cliente
-import com.example.registroproyect.domain.ClienteDb
+import com.example.registroproyect.data.local.ClienteDb
+import com.example.registroproyect.data.repository.ClienteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ClienteViewModel @Inject constructor(
-    private val clienteDb: ClienteDb,
+    private val repository: ClienteRepository,
 ) : ViewModel() {
     var Nombre by mutableStateOf("")
     var Telefono by mutableStateOf("")
@@ -63,7 +63,7 @@ class ClienteViewModel @Inject constructor(
         }
     }
 
-    val clientes: StateFlow<List<Cliente>> = clienteDb.clienteDao().getAll().stateIn(
+    val clientes: StateFlow<List<Cliente>> = repository.getAll().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = emptyList()
@@ -80,13 +80,13 @@ class ClienteViewModel @Inject constructor(
                 FechaNacimiento = FechaNacimiento,
                 Ocupacion = Ocupacion
             )
-            clienteDb.clienteDao().save(cliente)
+            repository.save(cliente)
             limpiar()
         }
     }
     fun delteCliente(cliente: Cliente){
         viewModelScope.launch {
-            clienteDb.clienteDao().delete(cliente)
+            repository.delete(cliente)
         }
     }
 
